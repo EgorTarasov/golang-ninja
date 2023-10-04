@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,15 +13,31 @@ const (
 )
 
 func MaskPasswordBad(password string) string {
-	for i := 0; i < len(password); i += 3 {
-		password = password[:i] + "_" + password[i+1:]
+	var buffer bytes.Buffer
+	for i := 0; i < len(password); i ++ {
+		
+		if (i % 3 == 0){
+			buffer.WriteString("_")
+		} else{
+			buffer.WriteByte(password[i])
+		}
 	}
 
-	return password
+	return buffer.String()
 }
 
 func MaskPasswordGood(password string) string {
-	return ""
+	var buffer bytes.Buffer
+	for i := 0; i < len(password); i ++ {
+		
+		if (i % 3 == 0){
+			buffer.WriteString("_")
+		} else{
+			buffer.WriteByte(password[i])
+		}
+	}
+
+	return buffer.String()
 }
 
 func BenchmarkMaskPassword(b *testing.B) {
